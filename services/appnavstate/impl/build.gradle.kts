@@ -21,6 +21,8 @@ plugins {
 }
 
 anvil {
+    trackSourceFiles = true
+    useKsp(contributesAndFactoryGeneration = true)
     generateDaggerFactories.set(true)
 }
 
@@ -29,7 +31,7 @@ android {
 }
 
 dependencies {
-    anvil(projects.anvilcodegen)
+    ksp(projects.anvilcodegen)
     implementation(libs.dagger)
     implementation(projects.libraries.core)
     implementation(projects.libraries.di)

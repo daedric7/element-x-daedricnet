@@ -4,8 +4,8 @@
 [versions]
 # Project
 android_gradle_plugin = "8.4.1"
-kotlin = "1.9.24"
-ksp = "1.9.24-1.0.20"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.22"
 firebaseAppDistribution = "5.0.0"
 
 # AndroidX
@@ -49,7 +49,7 @@ telephoto = "0.11.2"
 
 # DI
 dagger = "2.51.1"
-anvil = "2.4.9"
+anvil = "2.5.0-beta09"
 
 # Auto service
 autoservice = "1.1.1"
@@ -62,6 +62,7 @@ kover = "0.8.1"
 [libraries]
 # Project
 android_gradle_plugin = { module = "com.android.tools.build:gradle", version.ref = "android_gradle_plugin" }
+compose_compiler_plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 # https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 android_desugar = "com.android.tools:desugar_jdk_libs:2.0.4"
 kotlin_gradle_plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -71,6 +72,7 @@ gms_google_services = "com.google.gms:google-services:4.4.2"
 google_firebase_bom = "com.google.firebase:firebase-bom:33.1.0"
 firebase_appdistribution_gradle = { module = "com.google.firebase:firebase-appdistribution-gradle", version.ref = "firebaseAppDistribution" }
 autonomousapps_dependencyanalysis_plugin = { module = "com.autonomousapps:dependency-analysis-gradle-plugin", version.ref = "dependencyAnalysis" }
+ksp_plugin = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
 # AndroidX
 androidx_core = { module = "androidx.core:core", version.ref = "core" }
@@ -233,3 +235,4 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 firebaseAppDistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
 knit = { id = "org.jetbrains.kotlinx.knit", version = "0.5.0" }
 sonarqube = "org.sonarqube:5.0.0.4638"
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

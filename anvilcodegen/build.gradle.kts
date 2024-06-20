@@ -20,6 +20,7 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.ksp.plugin)
     implementation(projects.anvilannotations)
     api(libs.anvil.compiler.api)
     implementation(libs.anvil.compiler.utils)
@@ -27,4 +28,6 @@ dependencies {
     implementation(libs.dagger)
     compileOnly(libs.google.autoservice.annotations)
     kapt(libs.google.autoservice)
+    implementation(libs.ksp.plugin)
+    implementation("com.squareup:kotlinpoet-ksp:1.17.0")
 }

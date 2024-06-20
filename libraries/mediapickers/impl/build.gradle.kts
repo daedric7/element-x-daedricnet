@@ -17,15 +17,25 @@
 plugins {
     id("io.element.android-compose-library")
     alias(libs.plugins.anvil)
+    alias(libs.plugins.ksp)
+}
+
+anvil {
+    trackSourceFiles = true
+    useKsp(contributesAndFactoryGeneration = true)
+    generateDaggerFactories.set(true)
 }
 
 android {
     namespace = "io.element.android.libraries.mediapickers.impl"
 
     dependencies {
-        implementation(projects.libraries.core)
+        ksp(projects.anvilcodegen)
+        implementation(libs.dagger)
         implementation(projects.libraries.di)
-        implementation(libs.inject)
+        implementation(projects.anvilannotations)
+
+        implementation(projects.libraries.core)
         api(projects.libraries.mediapickers.api)
     }
 }

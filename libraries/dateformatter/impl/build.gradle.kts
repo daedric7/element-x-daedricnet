@@ -21,6 +21,8 @@ plugins {
 }
 
 anvil {
+    trackSourceFiles = true
+    useKsp(contributesAndFactoryGeneration = true)
     generateDaggerFactories.set(true)
 }
 
@@ -28,7 +30,7 @@ android {
     namespace = "io.element.android.libraries.dateformatter.impl"
 
     dependencies {
-        anvil(projects.anvilcodegen)
+        ksp(projects.anvilcodegen)
         implementation(libs.dagger)
         implementation(projects.libraries.di)
         implementation(projects.anvilannotations)

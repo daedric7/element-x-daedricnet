@@ -26,12 +26,14 @@ android {
 }
 
 anvil {
+    trackSourceFiles = true
+    useKsp(contributesAndFactoryGeneration = true)
     generateDaggerFactories.set(true)
 }
 
 dependencies {
     implementation(projects.anvilannotations)
-    anvil(projects.anvilcodegen)
+    ksp(projects.anvilcodegen)
     api(projects.features.ftue.api)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)

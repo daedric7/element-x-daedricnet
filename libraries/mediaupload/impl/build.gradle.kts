@@ -24,7 +24,8 @@ android {
     namespace = "io.element.android.libraries.mediaupload.impl"
 
     anvil {
-        generateDaggerFactories.set(true)
+    trackSourceFiles = true
+    useKsp(contributesAndFactoryGeneration = true)
     }
 
     testOptions {
@@ -35,7 +36,7 @@ android {
 
     dependencies {
         implementation(projects.anvilannotations)
-        anvil(projects.anvilcodegen)
+        ksp(projects.anvilcodegen)
 
         api(projects.libraries.mediaupload.api)
         implementation(projects.libraries.architecture)
