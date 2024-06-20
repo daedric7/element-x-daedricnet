@@ -130,7 +130,6 @@ fun TimelineItemEventRow(
     onLinkClick: (String) -> Unit,
     onUserDataClick: (UserId) -> Unit,
     inReplyToClick: (EventId) -> Unit,
-    onTimestampClick: (TimelineItem.Event) -> Unit,
     onReactionClick: (emoji: String, eventId: TimelineItem.Event) -> Unit,
     onReactionLongClick: (emoji: String, eventId: TimelineItem.Event) -> Unit,
     onMoreReactionsClick: (eventId: TimelineItem.Event) -> Unit,
@@ -190,7 +189,6 @@ fun TimelineItemEventRow(
                         interactionSource = interactionSource,
                         onClick = onClick,
                         onLongClick = onLongClick,
-                        onTimestampClick = onTimestampClick,
                         inReplyToClick = ::inReplyToClick,
                         onUserDataClick = ::onUserDataClick,
                         onReactionClick = { emoji -> onReactionClick(emoji, event) },
@@ -209,7 +207,6 @@ fun TimelineItemEventRow(
                 interactionSource = interactionSource,
                 onClick = onClick,
                 onLongClick = onLongClick,
-                onTimestampClick = onTimestampClick,
                 inReplyToClick = ::inReplyToClick,
                 onUserDataClick = ::onUserDataClick,
                 onReactionClick = { emoji -> onReactionClick(emoji, event) },
@@ -265,7 +262,6 @@ private fun TimelineItemEventRowContent(
     interactionSource: MutableInteractionSource,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    onTimestampClick: (TimelineItem.Event) -> Unit,
     inReplyToClick: () -> Unit,
     onUserDataClick: () -> Unit,
     onReactionClick: (emoji: String) -> Unit,
@@ -337,9 +333,6 @@ private fun TimelineItemEventRowContent(
                 event = event,
                 onMessageLongClick = onLongClick,
                 inReplyToClick = inReplyToClick,
-                onTimestampClick = {
-                    onTimestampClick(event)
-                },
                 onLinkClick = onLinkClick,
                 eventSink = eventSink,
             )
@@ -419,7 +412,6 @@ private fun MessageEventBubbleContent(
     event: TimelineItem.Event,
     onMessageLongClick: () -> Unit,
     inReplyToClick: () -> Unit,
-    onTimestampClick: () -> Unit,
     onLinkClick: (String) -> Unit,
     eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
     @SuppressLint("ModifierParameter")
@@ -468,8 +460,6 @@ private fun MessageEventBubbleContent(
                     content {}
                     TimelineEventTimestampView(
                         event = event,
-                        onClick = onTimestampClick,
-                        onLongClick = ::onTimestampLongClick,
                         modifier = Modifier
                             // Outer padding
                             .padding(horizontal = 4.dp, vertical = 4.dp)
@@ -490,8 +480,6 @@ private fun MessageEventBubbleContent(
                     overlay = {
                         TimelineEventTimestampView(
                             event = event,
-                            onClick = onTimestampClick,
-                            onLongClick = ::onTimestampLongClick,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         )
@@ -502,8 +490,6 @@ private fun MessageEventBubbleContent(
                     content {}
                     TimelineEventTimestampView(
                         event = event,
-                        onClick = onTimestampClick,
-                        onLongClick = ::onTimestampLongClick,
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(horizontal = 8.dp, vertical = 4.dp)
