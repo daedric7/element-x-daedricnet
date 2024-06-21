@@ -17,10 +17,17 @@
 plugins {
     id("io.element.android-library")
     alias(libs.plugins.anvil)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "io.element.android.features.cachecleaner.api"
+}
+
+anvil {
+    trackSourceFiles = true
+    useKsp(contributesAndFactoryGeneration = true, componentMerging = true)
+    generateDaggerFactories.set(true)
 }
 
 dependencies {
