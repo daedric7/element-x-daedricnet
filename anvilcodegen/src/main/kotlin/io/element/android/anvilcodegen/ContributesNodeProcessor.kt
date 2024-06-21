@@ -17,7 +17,6 @@
 package io.element.android.anvilcodegen
 
 import com.google.devtools.ksp.KspExperimental
-import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -27,6 +26,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import com.squareup.anvil.annotations.ContributesTo
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -36,7 +36,6 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
 import dagger.Binds
@@ -54,23 +53,27 @@ class ContributesNodeProcessor(
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val annotatedSymbols = resolver.getSymbolsWithAnnotation(ContributesNode::class.qualifiedName!!)
+            .filterIsInstance<KSClassDeclaration>()
+            .iterator()
 
-        annotatedSymbols
-            .mapNotNull { it as? KSClassDeclaration }
-            .onEach {
-                logger.warn("Processing ${it.qualifiedName?.asString()}")
-                generateModule(it, logger)
-                generateFactory(it)
-            }
+        if (!annotatedSymbols.hasNext()) {
+            logger.warn("No classes annotated with @ContributesNode found")
+            return emptyList()
+        }
+
+        while (annotatedSymbols.hasNext()) {
+            val ksClass = annotatedSymbols.next()
+            logger.warn("Processing ${ksClass.qualifiedName?.asString()}")
+            generateModule(ksClass, logger)
+            generateFactory(ksClass)
+        }
 
         return emptyList()
     }
 
-    @OptIn(KspExperimental::class)
     private fun generateModule(ksClass: KSClassDeclaration, logger: KSPLogger) {
-        val annotation = ksClass.getAnnotationsByType(ContributesNode::class).first()
-        logger.warn("Trying to get scope: ${annotation.scope}")
-        val scopeClassName = annotation.scope.asTypeName()
+        val annotation = ksClass.annotations.find { it.shortName.asString() == "ContributesNode" }!!
+        val scope = annotation.arguments.find { it.name?.asString() == "scope" }!!.value as KSType
         val modulePackage = ksClass.packageName.asString()
         val moduleClassName = "${ksClass.simpleName.asString()}_Module"
         val content = FileSpec.builder(
@@ -81,11 +84,11 @@ class ContributesNodeProcessor(
                 TypeSpec.classBuilder(moduleClassName)
                     .addModifiers(KModifier.ABSTRACT)
                     .addAnnotation(Module::class)
-                    .addAnnotation(AnnotationSpec.builder(ContributesTo::class).addMember("%T::class", scopeClassName).build())
+                    .addAnnotation(AnnotationSpec.builder(ContributesTo::class).addMember("%T::class", scope.toTypeName()).build())
                     .addFunction(
                         FunSpec.builder("bind${ksClass.simpleName.asString()}Factory")
                             .addModifiers(KModifier.ABSTRACT)
-                            .addParameter("factory", ClassName(modulePackage, "${ksClass.simpleName}_AssistedFactory"))
+                            .addParameter("factory", ClassName(modulePackage, "${ksClass.simpleName.asString()}_AssistedFactory"))
                             .returns(ClassName.bestGuess(assistedNodeFactoryFqName.asString()).parameterizedBy(STAR))
                             .addAnnotation(Binds::class)
                             .addAnnotation(IntoMap::class)
@@ -112,7 +115,7 @@ class ContributesNodeProcessor(
     @OptIn(KspExperimental::class)
     private fun generateFactory(ksClass: KSClassDeclaration) {
         val generatedPackage = ksClass.packageName.asString()
-        val assistedFactoryClassName = "${ksClass.simpleName}_AssistedFactory"
+        val assistedFactoryClassName = "${ksClass.simpleName.asString()}_AssistedFactory"
         val constructor = ksClass.getConstructors().singleOrNull { it.isAnnotationPresent(AssistedInject::class) }
         val assistedParameters = constructor?.parameters?.filter { it.isAnnotationPresent(Assisted::class) }.orEmpty()
         if (constructor == null || assistedParameters.size != 2) {
@@ -167,4 +170,3 @@ class ContributesNodeProcessor(
         private val nodeKeyFqName = FqName("io.element.android.libraries.architecture.NodeKey")
     }
 }
-
