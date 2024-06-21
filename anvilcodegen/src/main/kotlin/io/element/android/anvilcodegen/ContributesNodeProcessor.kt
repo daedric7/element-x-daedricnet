@@ -56,10 +56,7 @@ class ContributesNodeProcessor(
             .filterIsInstance<KSClassDeclaration>()
             .iterator()
 
-        if (!annotatedSymbols.hasNext()) {
-            logger.warn("No classes annotated with @ContributesNode found")
-            return emptyList()
-        }
+        if (!annotatedSymbols.hasNext()) return emptyList()
 
         while (annotatedSymbols.hasNext()) {
             val ksClass = annotatedSymbols.next()
