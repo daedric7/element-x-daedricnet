@@ -33,11 +33,6 @@ android {
     namespace = "io.element.android.appnav"
 }
 
-anvil {
-    trackSourceFiles = true
-//    generateDaggerFactories.set(true)
-}
-
 dependencies {
     implementation(projects.anvilannotations)
     ksp(projects.anvilcodegen)

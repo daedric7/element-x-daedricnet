@@ -24,7 +24,6 @@ android {
     namespace = "io.element.android.libraries.mediaupload.api"
 
     anvil {
-    trackSourceFiles = true
     useKsp(contributesAndFactoryGeneration = true)
     }
 

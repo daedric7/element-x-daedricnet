@@ -25,7 +25,6 @@ android {
 }
 
 anvil {
-    trackSourceFiles = true
     useKsp(contributesAndFactoryGeneration = true, componentMerging = true)
     generateDaggerFactories.set(true)
 }
