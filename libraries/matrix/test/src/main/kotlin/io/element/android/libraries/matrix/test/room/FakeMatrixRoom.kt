@@ -79,7 +79,6 @@ class FakeMatrixRoom(
     override val isPublic: Boolean = true,
     override val isSpace: Boolean = false,
     override val isDirect: Boolean = false,
-    override val isOneToOne: Boolean = false,
     override val joinedMemberCount: Long = 123L,
     override val activeMemberCount: Long = 234L,
     val notificationSettingsService: NotificationSettingsService = FakeNotificationSettingsService(),
@@ -90,6 +89,8 @@ class FakeMatrixRoom(
     canRedactOwn: Boolean = false,
     canRedactOther: Boolean = false,
 ) : MatrixRoom {
+    override val isOneToOne: Boolean = activeMemberCount <= 2L
+
     private var ignoreResult: Result<Unit> = Result.success(Unit)
     private var unignoreResult: Result<Unit> = Result.success(Unit)
     private var userDisplayNameResult = Result.success<String?>(null)
@@ -743,6 +744,7 @@ fun aRoomInfo(
     isSpace: Boolean = false,
     isTombstoned: Boolean = false,
     isFavorite: Boolean = false,
+    isEncrypted: Boolean = false,
     canonicalAlias: RoomAlias? = null,
     alternativeAliases: List<String> = emptyList(),
     currentUserMembership: CurrentUserMembership = CurrentUserMembership.JOINED,
@@ -768,6 +770,7 @@ fun aRoomInfo(
     isSpace = isSpace,
     isTombstoned = isTombstoned,
     isFavorite = isFavorite,
+    isEncrypted = isEncrypted,
     canonicalAlias = canonicalAlias,
     alternativeAliases = alternativeAliases.toImmutableList(),
     currentUserMembership = currentUserMembership,
